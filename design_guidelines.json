@@ -1,0 +1,119 @@
+{
+  "app_name": "Tanda",
+  "identity_and_concept": {
+    "title": "Tanda - Premium iOS Light Calendar Marking Web App",
+    "tagline": "Mark your days with precision and elegance",
+    "language": "Indonesian (Bahasa Indonesia)",
+    "storage": "FastAPI + MongoDB backend with real-time server synchronization",
+    "theme_mode": "Terang (Light iOS) - Pristine white surfaces, crisp SF-style typography, subtle translucent liquid-glass floating pills, hairline dividers, and vivid iOS system accent markers."
+  },
+  "typography": {
+    "font_family_primary": "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif",
+    "font_family_mono": "'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    "font_weights": {
+      "light": "300",
+      "regular": "400",
+      "medium": "500",
+      "semibold": "600",
+      "bold": "700",
+      "extrabold": "800",
+      "black": "900"
+    },
+    "hierarchy": {
+      "hero_month_title": "text-[40px] sm:text-[44px] font-[800] tracking-tight leading-none text-[#0B0B0F]",
+      "year_header": "text-sm font-semibold tracking-wide text-[#8E8E93]",
+      "weekday_label": "text-[12px] font-bold tracking-wider text-[#8E8E93] uppercase",
+      "unmarked_day_number": "text-[28px] sm:text-[32px] font-semibold text-[#8E8E93]/70 hover:text-[#0B0B0F] transition-colors",
+      "marked_day_number": "text-[24px] sm:text-[28px] font-extrabold text-[#0B0B0F]",
+      "legend_count_number": "text-[26px] sm:text-[30px] font-black text-[#0B0B0F]",
+      "legend_label_text": "text-[18px] sm:text-[20px] font-bold text-[#0B0B0F]",
+      "sheet_title": "text-xl font-bold text-[#0B0B0F]",
+      "body_regular": "text-base font-medium text-[#1C1C1E]",
+      "body_subtle": "text-sm font-normal text-[#8E8E93]"
+    }
+  },
+  "colors": {
+    "background_base": "#FAFAFB",
+    "surface_card": "#FFFFFF",
+    "surface_secondary": "#F2F2F7",
+    "surface_tertiary": "#E5E5EA",
+    "text_primary": "#0B0B0F",
+    "text_secondary": "#3C3C43",
+    "text_tertiary": "#8E8E93",
+    "hairline_border": "rgba(60, 60, 67, 0.12)",
+    "pill_background": "rgba(255, 255, 255, 0.85)",
+    "pill_border": "rgba(255, 255, 255, 0.6)",
+    "pill_shadow": "0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04)",
+    "ios_system_palette": [
+      { "name": "systemRed", "hex": "#FF3B30", "label_id": "merah", "light_bg": "#FFE5E5" },
+      { "name": "systemOrange", "hex": "#FF9500", "label_id": "oranye", "light_bg": "#FFF0E0" },
+      { "name": "systemYellow", "hex": "#FFCC00", "label_id": "kuning", "light_bg": "#FFF9D6" },
+      { "name": "systemGreen", "hex": "#34C759", "label_id": "hijau", "light_bg": "#E2F9E8" },
+      { "name": "systemMint", "hex": "#00C7BE", "label_id": "mint", "light_bg": "#DDF9F7" },
+      { "name": "systemTeal", "hex": "#30B0C7", "label_id": "teal", "light_bg": "#E1F6FA" },
+      { "name": "systemCyan", "hex": "#32ADE6", "label_id": "sian", "light_bg": "#E3F5FC" },
+      { "name": "systemBlue", "hex": "#007AFF", "label_id": "biru", "light_bg": "#E0EEFF" },
+      { "name": "systemIndigo", "hex": "#5856D6", "label_id": "nila", "light_bg": "#EBEBFA" },
+      { "name": "systemPurple", "hex": "#AF52DE", "label_id": "ungu", "light_bg": "#F5E6FC" },
+      { "name": "systemPink", "hex": "#FF2D55", "label_id": "merah_muda", "light_bg": "#FFE4EA" },
+      { "name": "systemBrown", "hex": "#A2845E", "label_id": "cokelat", "light_bg": "#F4EFEA" },
+      { "name": "systemGray", "hex": "#8E8E93", "label_id": "abu_abu", "light_bg": "#EFEFF4" }
+    ]
+  },
+  "layout_and_structure": {
+    "viewport_constraint": "max-w-[430px] w-full mx-auto min-h-screen bg-[#FAFAFB] text-[#0B0B0F] relative flex flex-col shadow-[0_0_50px_rgba(0,0,0,0.06)] border-x border-slate-200/60 overflow-x-hidden font-sans",
+    "desktop_wrapper": "min-h-screen bg-[#F0F2F5] flex items-center justify-center p-0 md:py-6 lg:py-10",
+    "header_bar": "sticky top-0 z-40 backdrop-blur-xl bg-[#FAFAFB]/80 px-5 pt-4 pb-2 flex items-center justify-between border-b border-[#3C3C43]/5 transition-all",
+    "top_left_year_pill": "flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-[#3C3C43]/10 text-sm font-bold text-[#0B0B0F] shadow-[0_2px_8px_rgba(0,0,0,0.06)] active:scale-95 transition-transform cursor-pointer",
+    "top_right_pill_group": "flex items-center gap-1 p-1 rounded-full bg-white/90 border border-[#3C3C43]/10 shadow-[0_2px_8px_rgba(0,0,0,0.06)] backdrop-blur-md",
+    "top_pill_button": "w-9 h-9 rounded-full flex items-center justify-center text-[#0B0B0F] hover:bg-[#F2F2F7] active:scale-90 transition-all cursor-pointer",
+    "month_title_section": "px-6 pt-4 pb-2 flex items-baseline justify-between",
+    "weekday_header_grid": "grid grid-cols-7 text-center px-4 py-2 border-b border-[#3C3C43]/10 text-[11px] font-bold text-[#8E8E93] uppercase tracking-widest",
+    "calendar_grid": "grid grid-cols-7 px-3 py-1 gap-y-1 relative",
+    "calendar_cell": "relative h-[58px] sm:h-[64px] flex flex-col items-center justify-center rounded-2xl cursor-pointer select-none transition-all hover:bg-[#F2F2F7]/60 active:scale-95",
+    "marked_circle_base": "w-[44px] h-[44px] sm:w-[48px] sm:h-[48px] rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.12)] relative transition-all transform active:scale-90",
+    "legend_section": "px-5 py-6 space-y-3.5 bg-gradient-to-b from-[#FAFAFB] to-white border-t border-[#3C3C43]/08 rounded-t-[32px] mt-4 shadow-[0_-8px_24px_rgba(0,0,0,0.02)]",
+    "legend_row": "flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#3C3C43]/08 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all active:scale-[0.99]",
+    "legend_circle_count": "w-[68px] h-[68px] sm:w-[72px] sm:h-[72px] rounded-full flex items-center justify-center text-[28px] font-black text-[#0B0B0F] shrink-0 shadow-[0_6px_20px_rgba(0,0,0,0.1)] border-2 border-white",
+    "marquee_banner": "w-full overflow-hidden py-2 bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 border-y border-[#3C3C43]/06"
+  },
+  "interactive_components": {
+    "add_marker_sheet": "Bottom sheet modal using Shadcn Sheet / Framer motion slide-up drawer with handle bar, color picker grid (13 iOS colors), icon picker (SF symbols like check-circle, lightning, x-mark, star, heart, bell, flame, cart, dollar, key, gift, tag, flag), date picker / auto-selected date, and customary custom label tag input.",
+    "search_drawer": "Floating overlay or bottom sheet with instant real-time filtering across all marked dates, label titles, colors, and notes, complete with jump-to-date calendar focus.",
+    "agenda_list_view": "Toggleable timeline list showing all marked events chronologically grouped by month with search and multi-delete options.",
+    "year_picker_modal": "Full grid selector of 12 months for rapid jump across past & future years (2020 - 2030+)."
+  },
+  "motion_and_micro_interactions": {
+    "library": "framer-motion + lenis smooth scroll",
+    "on_load": "Masked line-by-line month title reveal with spring physics (stiffness 300, damping 25)",
+    "calendar_cascade": "Staggered grid item entrance animation (staggerChildren 0.015s)",
+    "marker_pop": "Spring scale animation on mark creation/toggle (scale from 0.4 -> 1.15 -> 1.0)",
+    "month_swipe": "Horizontal drag gesture switch with spring snaps (drag='x' dragConstraints={{ left: 0, right: 0 }})",
+    "marquee": "Continuous slow editorial smooth drift of upcoming marked events"
+  },
+  "test_id_conventions": {
+    "header_year_button": "header-year-button",
+    "header_agenda_button": "header-agenda-button",
+    "header_search_button": "header-search-button",
+    "header_add_marker_button": "header-add-marker-button",
+    "month_title_display": "month-title-display",
+    "calendar_day_cell": "calendar-day-cell-{date}",
+    "add_marker_sheet_submit": "add-marker-submit-button",
+    "add_marker_color_option": "color-option-{colorName}",
+    "add_marker_icon_option": "icon-option-{iconName}",
+    "add_marker_label_input": "add-marker-label-input",
+    "legend_item": "legend-item-{labelId}",
+    "legend_count_badge": "legend-count-{labelId}",
+    "year_picker_option": "year-option-{year}",
+    "search_input": "search-input",
+    "search_result_item": "search-result-item-{id}"
+  },
+  "instructions_to_main_agent": [
+    "Strictly adhere to light mode iOS styling ('Terang') with pure white cards, #FAFAFB base, and thin hairline borders.",
+    "Ensure max-width constraint (430px) is applied so the app renders as a sleek mobile frame centered on desktop browsers.",
+    "Implement full FastAPI backend CRUD API endpoints under /api/markers for storing, retrieving, creating, updating, and deleting marker items in MongoDB.",
+    "Include Indonesian text for all user-facing UI strings (e.g., 'Januari', 'Minggu', 'Senin', 'Lunas', 'Token Listrik', 'Belum Lunas', 'Tambah Catatan', 'Cari Catatan', 'Pilih Warna').",
+    "Support multiple markers per single date with overlapping indicator badges or stacked circles.",
+    "Ensure all buttons and interactive elements have data-testid attributes for automated testing."
+  ]
+}
