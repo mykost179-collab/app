@@ -49,6 +49,7 @@ function TandaApp() {
   const [editMarker, setEditMarker] = useState(null);
   const [legendFilter, setLegendFilter] = useState(null);
   const [exporting, setExporting] = useState(false);
+  const [orientation, setOrientation] = useState(null);
 
   const { data: markers = [], isLoading } = useQuery({ queryKey: ["markers"], queryFn: fetchMarkers });
 
@@ -101,7 +102,7 @@ function TandaApp() {
   }, [markers]);
 
   const handleDownload = useCallback(async () => {
-    if (exporting) return;
+    if (exporting || !orientation) return;
     const node = document.getElementById("export-card");
     setExporting(true);
     try {
@@ -113,7 +114,7 @@ function TandaApp() {
       }
       let blob, fileName;
       try {
-        ({ blob, fileName } = await renderPosterJpg({ view, eventsByDate, markers, iconSvgs }));
+        ({ blob, fileName } = await renderPosterJpg({ view, eventsByDate, markers, iconSvgs, orientation }));
       } catch (err) {
         if (!node) throw err;
         const canvas = await html2canvas(node, { scale: 3, backgroundColor: "#FAFAFB", logging: false });
@@ -148,7 +149,7 @@ function TandaApp() {
     } finally {
       setExporting(false);
     }
-  }, [exporting, view, eventsByDate, markers]);
+  }, [exporting, view, eventsByDate, markers, orientation]);
 
   const meta = useMemo(() => {
     const prefix = `${view.year}-${pad2(view.month)}`;
@@ -235,7 +236,7 @@ function TandaApp() {
             onToggleFilter={toggleLegendFilter}
             onAdd={() => openAdd(todayStr())}
           />
-          <DownloadSection onDownload={handleDownload} exporting={exporting} />
+          <DownloadSection onDownload={handleDownload} exporting={exporting} orientation={orientation} onOrientation={setOrientation} />
         </main>
 
         <div className="export-offscreen" aria-hidden="true">
