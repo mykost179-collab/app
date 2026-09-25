@@ -54,11 +54,31 @@ function TandaApp() {
     if (!node || exporting) return;
     setExporting(true);
     try {
-      const canvas = await html2canvas(node, { scale: 2, backgroundColor: "#FAFAFB", useCORS: true, logging: false });
+      const canvas = await html2canvas(node, { scale: 3, backgroundColor: "#FAFAFB", logging: false });
+      const blob = await new Promise((resolve, reject) =>
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("blob-gagal"))), "image/jpeg", 0.92)
+      );
+      const fileName = `My-Date-${MONTHS_ID[view.month - 1]}-${view.year}.jpg`;
+      const file = new File([blob], fileName, { type: "image/jpeg" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: "My Date",
+            text: `Kalender ${MONTHS_ID[view.month - 1]} ${view.year} — My Date`,
+          });
+          toast.success("Berhasil dibagikan");
+          return;
+        } catch (err) {
+          if (err && err.name === "AbortError") return;
+        }
+      }
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.download = `My-Date-${MONTHS_ID[view.month - 1]}-${view.year}.jpg`;
-      link.href = canvas.toDataURL("image/jpeg", 0.95);
+      link.download = fileName;
+      link.href = url;
       link.click();
+      URL.revokeObjectURL(url);
       toast.success("JPG tersimpan di perangkatmu");
     } catch (e) {
       toast.error("Gagal membuat JPG, coba lagi");

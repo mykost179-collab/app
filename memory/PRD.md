@@ -24,8 +24,8 @@ Saya ingin membuat sebuah webapp untuk tampilan ponsel dengan rentang layar iPho
 - Legenda (agregasi label+warna+ikon dengan hitungan lingkaran besar + ikon warna + daftar tanggal), tap → sorot tanggal terkait di kalender (yang lain redup)
 - Agenda (semua penanda per tanggal), Cari (keterangan/tanggal, lompat ke tanggal), Marquee "Jadwal ke Depan" (pelan, klik lompat)
 - Data tersimpan di MongoDB; optimistic invalidation via react-query; toast sukses/galat; semua tombol punya data-testid
-- Fitur Unduh JPG (2026-09-25): footer lama dihapus; tombol "Unduh JPG" merender kartu statis (ExportCard) berisi kalender + legenda bulan aktif via html2canvas scale 2 → file `My-Date-<Bulan>-<Tahun>.jpg`
-- Rebrand (2026-09-25): nama aplikasi menjadi "My Date"; ikon kalender 3D hitam-putih khas Apple (app-icon.png) dipakai sebagai favicon, apple-touch-icon, tombol unduh, dan header kartu JPG; eyebrow kalender "MY DATE — KALENDER PENANDA"
+- Fitur Unduh JPG (2026-09-25): tombol "Bagikan / Unduh JPG" merender kartu statis (ExportCard, layout poster 1280px dua kolom: kalender + legenda) via html2canvas scale 3 → output 3840px (4K UHD), file `My-Date-<Bulan>-<Tahun>.jpg`; di ponsel membuka share sheet native (Web Share API with files), fallback unduh biasa di desktop; batal share = tanpa notifikasi galat
+- Rebrand (2026-09-25): nama aplikasi menjadi "My Date"; ikon kalender 3D hitam-putih khas Apple (app-icon.png) HANYA muncul sebagai favicon browser, apple-touch-icon, dan ikon PWA saat di-install ke homepage (manifest.json) — tidak ditampilkan di dalam halaman aplikasi maupun di kartu JPG; eyebrow kalender "MY DATE — KALENDER PENANDA"
 - Logo Tanda (squircle 3 titik warna) + favicon.svg
 
 ## Persona
