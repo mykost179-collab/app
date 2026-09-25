@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import Sheet from "@/components/Sheet";
-import { COLORS, ICONS, todayStr } from "@/lib/constants";
-import { Check, Trash2 } from "lucide-react";
+import { COLORS, ICONS, ICON_MAP, todayStr } from "@/lib/constants";
+import { Check, Trash2, Search } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AddSheet({ open, onClose, initialDate, editMarker, onCreate, onUpdate, onDelete }) {
   const [date, setDate] = useState(initialDate || todayStr());
   const [label, setLabel] = useState("");
   const [color, setColor] = useState("red");
-  const [icon, setIcon] = useState("check-circle");
+  const [icon, setIcon] = useState("check-circle2");
+  const [iconQuery, setIconQuery] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (open) {
       setConfirmDelete(false);
+      setIconQuery("");
       if (editMarker) {
         setDate(editMarker.date);
         setLabel(editMarker.label);
@@ -23,10 +25,15 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
         setDate(initialDate || todayStr());
         setLabel("");
         setColor("red");
-        setIcon("check-circle");
+        setIcon("check-circle2");
       }
     }
   }, [open, editMarker, initialDate]);
+
+  const q = iconQuery.trim().toLowerCase();
+  const filteredIcons = q
+    ? ICONS.filter((ic) => ic.label.toLowerCase().includes(q) || ic.key.includes(q))
+    : ICONS;
 
   const submit = () => {
     if (!label.trim()) {
@@ -79,9 +86,26 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
         ))}
       </div>
 
-      <label className="block mt-4 mb-2 px-1 text-[11px] font-extrabold tracking-[0.18em] text-[#8E8E93]">SIMBOL</label>
-      <div className="grid grid-cols-6 gap-2 justify-items-center">
-        {ICONS.map((ic) => {
+      <label className="block mt-4 mb-2 px-1 text-[11px] font-extrabold tracking-[0.18em] text-[#8E8E93]">
+        SIMBOL <span className="text-[#8E8E93]/60 font-bold normal-case tracking-normal">• {ICONS.length} simbol gaya SF</span>
+      </label>
+      <div className="flex items-center gap-2 mb-2 px-3.5 py-2 rounded-xl bg-[#F2F2F7]">
+        <Search size={14} strokeWidth={2.6} className="text-[#8E8E93] shrink-0" />
+        <input
+          data-testid="icon-search-input"
+          value={iconQuery}
+          onChange={(e) => setIconQuery(e.target.value)}
+          placeholder="Cari simbol (kopi, kerja, hujan...)"
+          className="flex-1 bg-transparent outline-none text-[13px] font-semibold text-[#0B0B0F] placeholder:text-[#8E8E93]/70 placeholder:font-medium"
+        />
+        {iconQuery && (
+          <button data-testid="icon-search-clear" onClick={() => setIconQuery("")} aria-label="Bersihkan pencarian" className="text-[11px] font-extrabold text-[#007AFF]">
+            Hapus
+          </button>
+        )}
+      </div>
+      <div className="grid grid-cols-6 gap-2 justify-items-center max-h-[248px] overflow-y-auto no-scrollbar pt-1 px-0.5">
+        {filteredIcons.map((ic) => {
           const selected = icon === ic.key;
           return (
             <button
@@ -89,7 +113,7 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
               data-testid={`icon-option-${ic.key}`}
               onClick={() => setIcon(ic.key)}
               aria-label={ic.label}
-              title={ic.label}
+              title={`${ic.label}`}
               className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all active:scale-90 ${
                 selected ? "shadow-[0_5px_14px_rgba(0,0,0,0.16)] scale-105" : "bg-[#F2F2F7]"
               }`}
@@ -103,6 +127,11 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
             </button>
           );
         })}
+        {filteredIcons.length === 0 && (
+          <p className="col-span-6 py-6 text-center text-[13px] font-semibold text-[#8E8E93]">
+            Simbol "{iconQuery}" tidak ditemukan.
+          </p>
+        )}
       </div>
 
       <button

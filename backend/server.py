@@ -24,10 +24,17 @@ api_router = APIRouter(prefix="/api")
 
 VALID_COLORS = {"red", "orange", "yellow", "green", "mint", "teal", "cyan",
                 "blue", "indigo", "purple", "pink", "brown", "gray"}
-VALID_ICONS = {"check-circle", "zap", "x-circle", "heart", "star", "bell", "flag",
-               "briefcase", "gift", "plane", "car", "home", "utensils", "coffee",
-               "shopping-bag", "credit-card", "wrench", "book", "dumbbell", "pill",
-               "sun", "moon", "cloud", "sparkles"}
+ICON_RE = re.compile(r"^[a-z][a-z0-9-]{0,39}$")
+
+
+class _IconSet:
+    """Ikon divalidasi lewat pola; daftar resmi dikirim dari frontend."""
+
+    def __contains__(self, icon):
+        return bool(ICON_RE.match(icon or ""))
+
+
+VALID_ICONS = _IconSet()
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 

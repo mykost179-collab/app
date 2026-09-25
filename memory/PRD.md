@@ -20,7 +20,7 @@ Saya ingin membuat sebuah webapp untuk tampilan ponsel dengan rentang layar iPho
 - Kalender bulanan bergaya iOS persis mock: lingkaran warna (13 warna sistem iOS), angka gelap, hairline antar pekan, hari ini bertanda titik, badge jumlah penanda ganda (>1)
 - Navigasi bulan: geser (drag) + tombol ‹ ›, judul bulan reveal ter-mask + parallax halus saat scroll
 - Pemilih tahun tanpa batas: pill "‹ 2026" → sheet grid 24 tahun, rentang digeser ‹ › (masa lalu & depan tanpa batas), tombol "Kembali ke Hari Ini", chip HARI INI muncul saat bukan bulan sekarang
-- Tandai tanggal: tap tanggal → DaySheet (daftar penanda, edit, hapus dua-langkah, tambah) ; form Penanda Baru: tanggal native, keterangan, 13 warna, 24 simbol
+- Tandai tanggal: tap tanggal → DaySheet (daftar penanda, edit, hapus dua-langkah, tambah) ; form Penanda Baru: tanggal native, keterangan, 13 warna, 219 simbol gaya SF Symbols (lucide) dengan pencarian instan + grid scroll
 - Legenda (agregasi label+warna+ikon dengan hitungan lingkaran besar + ikon warna + daftar tanggal), tap → sorot tanggal terkait di kalender (yang lain redup)
 - Agenda (semua penanda per tanggal), Cari (keterangan/tanggal, lompat ke tanggal), Marquee "Jadwal ke Depan" (pelan, klik lompat)
 - Data tersimpan di MongoDB; optimistic invalidation via react-query; toast sukses/galat; semua tombol punya data-testid
