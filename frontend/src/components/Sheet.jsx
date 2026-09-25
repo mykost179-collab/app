@@ -19,7 +19,7 @@ export default function Sheet({ open, onClose, title, children, testid = "sheet"
               <X size={15} strokeWidth={2.8} />
             </button>
           </div>
-          <div className="px-5 pb-12 overflow-y-auto flex-1 no-scrollbar">
+          <div className="px-5 pb-32 overflow-y-auto flex-1 no-scrollbar">
             {children}
           </div>
         </Drawer.Content>
