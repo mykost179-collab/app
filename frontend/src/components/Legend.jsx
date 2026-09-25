@@ -1,20 +1,10 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
-import { COLOR_MAP, ICON_MAP, formatTanggalPendek, slugify } from "@/lib/constants";
+import { COLOR_MAP, ICON_MAP, formatTanggalPendek, slugify, legendGroups } from "@/lib/constants";
 
 export default function Legend({ markers, legendFilter, onToggleFilter, onAdd }) {
-  const groups = useMemo(() => {
-    const map = new Map();
-    for (const m of markers) {
-      const key = `${m.label}|${m.color}|${m.icon}`;
-      if (!map.has(key)) map.set(key, { key, label: m.label, color: m.color, icon: m.icon, dates: [] });
-      map.get(key).dates.push(m.date);
-    }
-    return [...map.values()]
-      .map((g) => ({ ...g, dates: g.dates.sort(), count: g.dates.length }))
-      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
-  }, [markers]);
+  const groups = useMemo(() => legendGroups(markers), [markers]);
 
   return (
     <section className="px-4 pt-3 pb-2" data-testid="legend-section">

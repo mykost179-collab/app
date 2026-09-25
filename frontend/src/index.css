@@ -151,3 +151,11 @@ input[type="date"] {
   -webkit-appearance: none;
   appearance: none;
 }
+
+.export-offscreen {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+}

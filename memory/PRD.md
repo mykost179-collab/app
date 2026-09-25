@@ -1,4 +1,4 @@
-# PRD — Tanda (Kalender Penanda Warna)
+# PRD — My Date (Kalender Penanda Warna)
 
 ## Problem Statement (asli)
 Saya ingin membuat sebuah webapp untuk tampilan ponsel dengan rentang layar iPhone 11 Pro Max. Fungsi aplikasi ini adalah untuk menandai tanggal pada kalender dengan warna. Varian warna lengkap dengan gaya khas Apple iOS SF Symbol yang elegan mewah dan minimalis. Tanggal dan tahun bisa dipilih masa depan dan masa lalu tanpa batas. Logika bulan yang tampil saat pertama aplikasi dibuka adalah bulan saat ini. Setiap tanggal yang ditandai bisa ditambahkan keterangan di halaman bawahnya (mirip legenda pada diagram). Di legenda ini bisa disematkan berbagai macam simbol khas SF Symbol iOS di setiap ujung tulisan dengan pilihan warna lengkap. Aplikasi tidak memiliki banyak halaman, tapi semua tombol yang tampil berfungsi.
@@ -24,6 +24,8 @@ Saya ingin membuat sebuah webapp untuk tampilan ponsel dengan rentang layar iPho
 - Legenda (agregasi label+warna+ikon dengan hitungan lingkaran besar + ikon warna + daftar tanggal), tap → sorot tanggal terkait di kalender (yang lain redup)
 - Agenda (semua penanda per tanggal), Cari (keterangan/tanggal, lompat ke tanggal), Marquee "Jadwal ke Depan" (pelan, klik lompat)
 - Data tersimpan di MongoDB; optimistic invalidation via react-query; toast sukses/galat; semua tombol punya data-testid
+- Fitur Unduh JPG (2026-09-25): footer lama dihapus; tombol "Unduh JPG" merender kartu statis (ExportCard) berisi kalender + legenda bulan aktif via html2canvas scale 2 → file `My-Date-<Bulan>-<Tahun>.jpg`
+- Rebrand (2026-09-25): nama aplikasi menjadi "My Date"; ikon kalender 3D hitam-putih khas Apple (app-icon.png) dipakai sebagai favicon, apple-touch-icon, tombol unduh, dan header kartu JPG; eyebrow kalender "MY DATE — KALENDER PENANDA"
 - Logo Tanda (squircle 3 titik warna) + favicon.svg
 
 ## Persona

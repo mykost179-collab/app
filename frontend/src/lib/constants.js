@@ -96,6 +96,28 @@ export const ICON_MAP = Object.fromEntries(ICONS.map((i) => [i.key, i]));
 ICON_MAP["check-circle"] = ICON_MAP["check-circle2"] || ICONS[0];
 ICON_MAP["x-circle"] = ICON_MAP["circle-x"] || ICONS[2];
 
+export const monthWeeks = (year, month) => {
+  const lead = new Date(year, month - 1, 1).getDay();
+  const total = new Date(year, month, 0).getDate();
+  const cells = Array(lead).fill(null).concat(Array.from({ length: total }, (_, i) => i + 1));
+  while (cells.length % 7) cells.push(null);
+  const weeks = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+  return weeks;
+};
+
+export const legendGroups = (markers) => {
+  const map = new Map();
+  for (const m of markers) {
+    const key = `${m.label}|${m.color}|${m.icon}`;
+    if (!map.has(key)) map.set(key, { key, label: m.label, color: m.color, icon: m.icon, dates: [] });
+    map.get(key).dates.push(m.date);
+  }
+  return [...map.values()]
+    .map((g) => ({ ...g, dates: g.dates.sort(), count: g.dates.length }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+};
+
 export const pad2 = (n) => String(n).padStart(2, "0");
 export const dateStr = (y, m, d) => `${y}-${pad2(m)}-${pad2(d)}`;
 

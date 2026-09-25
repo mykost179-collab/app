@@ -74,7 +74,7 @@ export default function CalendarGrid({ view, dir, eventsByDate, onPrev, onNext, 
     <section className="px-3">
       <motion.div style={{ y: yParallax, opacity: fadeParallax }} className="px-2 pt-5 pb-3 flex items-end justify-between">
         <div className="overflow-hidden">
-          <p className="text-[10px] font-extrabold tracking-[0.24em] text-[#8E8E93] mb-1">TANDA — KALENDER PENANDA</p>
+          <p className="text-[10px] font-extrabold tracking-[0.24em] text-[#8E8E93] mb-1">MY DATE — KALENDER PENANDA</p>
           <div className="overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.h1

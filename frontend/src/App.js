@@ -2,13 +2,15 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Toaster, toast } from "sonner";
 import Lenis from "lenis";
+import html2canvas from "html2canvas";
 import { fetchMarkers, createMarker, updateMarker, deleteMarker, pesanError } from "@/lib/api";
-import { todayStr, parseDateStr, pad2 } from "@/lib/constants";
+import { MONTHS_ID, todayStr, parseDateStr, pad2 } from "@/lib/constants";
 import TopBar from "@/components/TopBar";
 import CalendarGrid from "@/components/CalendarGrid";
 import Legend from "@/components/Legend";
 import Marquee from "@/components/Marquee";
-import Logo from "@/components/Logo";
+import DownloadSection from "@/components/DownloadSection";
+import ExportCard from "@/components/ExportCard";
 import YearSheet from "@/components/YearSheet";
 import AgendaSheet from "@/components/AgendaSheet";
 import SearchSheet from "@/components/SearchSheet";
@@ -45,6 +47,25 @@ function TandaApp() {
   const [activeDate, setActiveDate] = useState(null);
   const [editMarker, setEditMarker] = useState(null);
   const [legendFilter, setLegendFilter] = useState(null);
+  const [exporting, setExporting] = useState(false);
+
+  const handleDownload = useCallback(async () => {
+    const node = document.getElementById("export-card");
+    if (!node || exporting) return;
+    setExporting(true);
+    try {
+      const canvas = await html2canvas(node, { scale: 2, backgroundColor: "#FAFAFB", useCORS: true, logging: false });
+      const link = document.createElement("a");
+      link.download = `My-Date-${MONTHS_ID[view.month - 1]}-${view.year}.jpg`;
+      link.href = canvas.toDataURL("image/jpeg", 0.95);
+      link.click();
+      toast.success("JPG tersimpan di perangkatmu");
+    } catch (e) {
+      toast.error("Gagal membuat JPG, coba lagi");
+    } finally {
+      setExporting(false);
+    }
+  }, [exporting, view]);
 
   const { data: markers = [], isLoading } = useQuery({ queryKey: ["markers"], queryFn: fetchMarkers });
 
@@ -181,8 +202,12 @@ function TandaApp() {
             onToggleFilter={toggleLegendFilter}
             onAdd={() => openAdd(todayStr())}
           />
-          <Logo />
+          <DownloadSection onDownload={handleDownload} exporting={exporting} />
         </main>
+
+        <div className="export-offscreen" aria-hidden="true">
+          <ExportCard view={view} eventsByDate={eventsByDate} markers={markers} />
+        </div>
 
         <YearSheet
           open={sheet === "year"}
