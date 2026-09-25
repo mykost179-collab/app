@@ -49,7 +49,19 @@ function TandaApp() {
   const [editMarker, setEditMarker] = useState(null);
   const [legendFilter, setLegendFilter] = useState(null);
   const [exporting, setExporting] = useState(false);
-  const [orientation, setOrientation] = useState(null);
+  const [orientation, setOrientation] = useState(() => {
+    try {
+      return localStorage.getItem("mydate-orientation");
+    } catch (e) {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      if (orientation) localStorage.setItem("mydate-orientation", orientation);
+    } catch (e) {}
+  }, [orientation]);
 
   const { data: markers = [], isLoading } = useQuery({ queryKey: ["markers"], queryFn: fetchMarkers });
 
@@ -68,10 +80,10 @@ function TandaApp() {
   }, []);
 
   const onCreate = useMutation({
-    mutationFn: createMarker,
-    onSuccess: () => {
+    mutationFn: (items) => Promise.all(items.map((it) => createMarker(it))),
+    onSuccess: (_res, items) => {
       qc.invalidateQueries({ queryKey: ["markers"] });
-      toast.success("Penanda ditambahkan");
+      toast.success(items.length > 1 ? `${items.length} penanda ditambahkan` : "Penanda ditambahkan");
     },
     onError: (e) => toast.error(pesanError(e)),
   });

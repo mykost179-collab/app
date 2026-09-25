@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import Sheet from "@/components/Sheet";
-import { COLORS, ICONS, ICON_MAP, todayStr } from "@/lib/constants";
+import { COLORS, ICONS, todayStr, dateStr, parseDateStr } from "@/lib/constants";
 import { Check, Trash2, Search } from "lucide-react";
 import { toast } from "sonner";
+
+const REPEAT_COUNTS = [4, 8, 12];
 
 export default function AddSheet({ open, onClose, initialDate, editMarker, onCreate, onUpdate, onDelete }) {
   const [date, setDate] = useState(initialDate || todayStr());
@@ -10,12 +12,23 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
   const [color, setColor] = useState("red");
   const [icon, setIcon] = useState("check-circle2");
   const [iconQuery, setIconQuery] = useState("");
+  const [recentIcons, setRecentIcons] = useState([]);
+  const [repeat, setRepeat] = useState("none");
+  const [repeatCount, setRepeatCount] = useState(4);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (open) {
       setConfirmDelete(false);
       setIconQuery("");
+      setRepeat("none");
+      setRepeatCount(4);
+      try {
+        const saved = JSON.parse(localStorage.getItem("mydate-recent-icons") || "[]");
+        setRecentIcons(Array.isArray(saved) ? saved.filter((k) => ICONS.some((i) => i.key === k)) : []);
+      } catch (e) {
+        setRecentIcons([]);
+      }
       if (editMarker) {
         setDate(editMarker.date);
         setLabel(editMarker.label);
@@ -30,6 +43,14 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
     }
   }, [open, editMarker, initialDate]);
 
+  const pushRecent = (key) => {
+    const next = [key, ...recentIcons.filter((k) => k !== key)].slice(0, 10);
+    setRecentIcons(next);
+    try {
+      localStorage.setItem("mydate-recent-icons", JSON.stringify(next));
+    } catch (e) {}
+  };
+
   const q = iconQuery.trim().toLowerCase();
   const filteredIcons = q
     ? ICONS.filter((ic) => ic.label.toLowerCase().includes(q) || ic.key.includes(q))
@@ -40,8 +61,33 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
       toast.error("Keterangan wajib diisi");
       return;
     }
-    if (editMarker) onUpdate(editMarker.id, { date, label, color, icon });
-    else onCreate({ date, label, color, icon });
+    pushRecent(icon);
+    if (editMarker) {
+      onUpdate(editMarker.id, { date, label, color, icon });
+      onClose();
+      return;
+    }
+    const items = [{ date, label: label.trim(), color, icon }];
+    if (repeat !== "none") {
+      const d = parseDateStr(date);
+      for (let i = 1; i < repeatCount; i++) {
+        let y2, m2, day2;
+        if (repeat === "weekly") {
+          const nd = new Date(d);
+          nd.setDate(d.getDate() + 7 * i);
+          y2 = nd.getFullYear();
+          m2 = nd.getMonth() + 1;
+          day2 = nd.getDate();
+        } else {
+          const mi = d.getMonth() + i;
+          y2 = d.getFullYear() + Math.floor(mi / 12);
+          m2 = (mi % 12) + 1;
+          day2 = Math.min(d.getDate(), new Date(y2, m2, 0).getDate());
+        }
+        items.push({ date: dateStr(y2, m2, day2), label: label.trim(), color, icon });
+      }
+    }
+    onCreate(items);
     onClose();
   };
 
@@ -89,6 +135,33 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
       <label className="block mt-4 mb-2 px-1 text-[11px] font-extrabold tracking-[0.18em] text-[#8E8E93]">
         SIMBOL <span className="text-[#8E8E93]/60 font-bold normal-case tracking-normal">• {ICONS.length} simbol gaya SF</span>
       </label>
+      {recentIcons.length > 0 && (
+        <div className="mb-2">
+          <p className="text-[10px] font-extrabold tracking-[0.18em] text-[#8E8E93] mb-1.5 px-1">BARU DIPAKAI</p>
+          <div className="flex gap-2 flex-wrap px-0.5">
+            {recentIcons.slice(0, 8).map((k) => {
+              const ic = ICONS.find((i) => i.key === k);
+              if (!ic) return null;
+              const selected = icon === k;
+              return (
+                <button
+                  key={k}
+                  data-testid={`recent-icon-option-${k}`}
+                  onClick={() => setIcon(k)}
+                  aria-label={`Baru dipakai: ${ic.label}`}
+                  title={ic.label}
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all active:scale-90 ${
+                    selected ? "shadow-[0_5px_14px_rgba(0,0,0,0.16)] scale-105" : "bg-[#F2F2F7]"
+                  }`}
+                  style={selected ? { background: activeColor.hex } : undefined}
+                >
+                  <ic.C size={17} strokeWidth={2.3} style={{ color: selected ? (activeColor.darkText ? "#0B0B0F" : "#FFFFFF") : "#3C3C43" }} />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
       <div className="flex items-center gap-2 mb-2 px-3.5 py-2 rounded-xl bg-[#F2F2F7]">
         <Search size={14} strokeWidth={2.6} className="text-[#8E8E93] shrink-0" />
         <input
@@ -134,12 +207,58 @@ export default function AddSheet({ open, onClose, initialDate, editMarker, onCre
         )}
       </div>
 
+      {!editMarker && (
+        <>
+          <label className="block mt-4 mb-2 px-1 text-[11px] font-extrabold tracking-[0.18em] text-[#8E8E93]">ULANGI</label>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              ["none", "Sekali"],
+              ["weekly", "Mingguan"],
+              ["monthly", "Bulanan"],
+            ].map(([val, lbl]) => (
+              <button
+                key={val}
+                data-testid={`repeat-option-${val}`}
+                onClick={() => setRepeat(val)}
+                className={`py-2.5 rounded-xl text-[13px] font-extrabold transition-all active:scale-95 ${
+                  repeat === val ? "bg-[#0B0B0F] text-white shadow-[0_5px_14px_rgba(0,0,0,0.16)]" : "bg-[#F2F2F7] text-[#0B0B0F]"
+                }`}
+              >
+                {lbl}
+              </button>
+            ))}
+          </div>
+          {repeat !== "none" && (
+            <>
+              <div className="flex items-center gap-2 mt-2.5 px-1">
+                <span className="text-[11px] font-extrabold tracking-[0.18em] text-[#8E8E93]">JUMLAH</span>
+                {REPEAT_COUNTS.map((n) => (
+                  <button
+                    key={n}
+                    data-testid={`repeat-count-${n}`}
+                    onClick={() => setRepeatCount(n)}
+                    className={`px-3 py-1.5 rounded-full text-[12px] font-extrabold transition-all active:scale-95 ${
+                      repeatCount === n ? "bg-[#0B0B0F] text-white" : "bg-[#F2F2F7] text-[#0B0B0F]"
+                    }`}
+                  >
+                    {n}×
+                  </button>
+                ))}
+              </div>
+              <p className="text-[11px] font-semibold text-[#8E8E93] mt-2 px-1">
+                Salinan otomatis dibuat di {repeat === "weekly" ? "minggu" : "bulan"}-berikutnya (termasuk tanggal ini).
+              </p>
+            </>
+          )}
+        </>
+      )}
+
       <button
         data-testid="add-marker-submit-button"
         onClick={submit}
         className="mt-6 w-full py-4 rounded-2xl bg-[#0B0B0F] text-white text-[15px] font-extrabold active:scale-[0.98] transition-transform shadow-[0_10px_26px_rgba(0,0,0,0.22)]"
       >
-        {editMarker ? "Simpan Perubahan" : "Simpan Penanda"}
+        {editMarker ? "Simpan Perubahan" : repeat === "none" ? "Simpan Penanda" : `Simpan ${repeatCount} Penanda`}
       </button>
 
       {editMarker && (
