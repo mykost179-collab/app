@@ -117,7 +117,7 @@ export default function ExportCard({ view, eventsByDate, markers }) {
                     <span style={{ flex: 1, minWidth: 0 }}>
                       <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 26, fontWeight: 800, color: "#0B0B0F" }}>
                         <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{g.label}</span>
-                        <Icon size={26} strokeWidth={2.4} style={{ color: COLOR_MAP[g.color].hex, flexShrink: 0 }} />
+                        <Icon size={26} strokeWidth={2.4} data-export-icon={g.icon} style={{ color: COLOR_MAP[g.color].hex, flexShrink: 0 }} />
                       </span>
                       <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: "#8E8E93", marginTop: 4 }}>
                         {g.dates.slice(0, 6).map(formatTanggalPendek).join(" • ")}

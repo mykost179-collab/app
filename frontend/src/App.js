@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Toaster, toast } from "sonner";
 import Lenis from "lenis";
 import html2canvas from "html2canvas";
+import { renderPosterJpg } from "@/lib/exportPoster";
 import { fetchMarkers, createMarker, updateMarker, deleteMarker, pesanError } from "@/lib/api";
 import { MONTHS_ID, todayStr, parseDateStr, pad2 } from "@/lib/constants";
 import TopBar from "@/components/TopBar";
@@ -48,44 +49,6 @@ function TandaApp() {
   const [editMarker, setEditMarker] = useState(null);
   const [legendFilter, setLegendFilter] = useState(null);
   const [exporting, setExporting] = useState(false);
-
-  const handleDownload = useCallback(async () => {
-    const node = document.getElementById("export-card");
-    if (!node || exporting) return;
-    setExporting(true);
-    try {
-      const canvas = await html2canvas(node, { scale: 3, backgroundColor: "#FAFAFB", logging: false });
-      const blob = await new Promise((resolve, reject) =>
-        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("blob-gagal"))), "image/jpeg", 0.92)
-      );
-      const fileName = `My-Date-${MONTHS_ID[view.month - 1]}-${view.year}.jpg`;
-      const file = new File([blob], fileName, { type: "image/jpeg" });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: "My Date",
-            text: `Kalender ${MONTHS_ID[view.month - 1]} ${view.year} — My Date`,
-          });
-          toast.success("Berhasil dibagikan");
-          return;
-        } catch (err) {
-          if (err && err.name === "AbortError") return;
-        }
-      }
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.download = fileName;
-      link.href = url;
-      link.click();
-      URL.revokeObjectURL(url);
-      toast.success("JPG tersimpan di perangkatmu");
-    } catch (e) {
-      toast.error("Gagal membuat JPG, coba lagi");
-    } finally {
-      setExporting(false);
-    }
-  }, [exporting, view]);
 
   const { data: markers = [], isLoading } = useQuery({ queryKey: ["markers"], queryFn: fetchMarkers });
 
@@ -136,6 +99,56 @@ function TandaApp() {
     }
     return map;
   }, [markers]);
+
+  const handleDownload = useCallback(async () => {
+    if (exporting) return;
+    const node = document.getElementById("export-card");
+    setExporting(true);
+    try {
+      const iconSvgs = {};
+      if (node) {
+        node.querySelectorAll("svg[data-export-icon]").forEach((svg) => {
+          iconSvgs[svg.getAttribute("data-export-icon")] = svg.outerHTML;
+        });
+      }
+      let blob, fileName;
+      try {
+        ({ blob, fileName } = await renderPosterJpg({ view, eventsByDate, markers, iconSvgs }));
+      } catch (err) {
+        if (!node) throw err;
+        const canvas = await html2canvas(node, { scale: 3, backgroundColor: "#FAFAFB", logging: false });
+        blob = await new Promise((resolve, reject) =>
+          canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("blob-gagal"))), "image/jpeg", 0.92)
+        );
+        fileName = `My-Date-${MONTHS_ID[view.month - 1]}-${view.year}.jpg`;
+      }
+      const file = new File([blob], fileName, { type: "image/jpeg" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: "My Date",
+            text: `Kalender ${MONTHS_ID[view.month - 1]} ${view.year} — My Date`,
+          });
+          toast.success("Berhasil dibagikan");
+          return;
+        } catch (err) {
+          if (err && err.name === "AbortError") return;
+        }
+      }
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = fileName;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("JPG tersimpan di perangkatmu");
+    } catch (e) {
+      toast.error("Gagal membuat JPG, coba lagi");
+    } finally {
+      setExporting(false);
+    }
+  }, [exporting, view, eventsByDate, markers]);
 
   const meta = useMemo(() => {
     const prefix = `${view.year}-${pad2(view.month)}`;
